@@ -2,7 +2,7 @@
   <v-app>
 
     <app-drawer :drawer="drawer"></app-drawer>
-    <app-toolbar @toggle-drawer="toggleDrawer"></app-toolbar>
+    <app-toolbar :show-bar-icon="true" @toggle-drawer="toggleDrawer"></app-toolbar>
 
     <v-content>
       <slot/>

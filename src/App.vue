@@ -5,15 +5,17 @@
 </template>
 
 <script>
-const defaultLayout = "default";
+const defaultLayout = "Default";
 
 import Home from "./components/layouts/Home"
+import Default from "./components/layouts/Default"
 
 export default {
   name: 'App',
 
   components: {
-    Home
+    Home,
+    Default
   },
 
   computed: {

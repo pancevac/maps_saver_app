@@ -4,6 +4,16 @@
       v-model="drawer"
       clipped
   >
+
+    <v-img :aspect-ratio="16/9" src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg">
+      <v-row align="end" class="lightbox white--text pa-2 fill-height">
+        <v-col>
+          <div class="subheading">Jonathan Lee</div>
+          <div class="body-1">heyfromjonathan@gmail.com</div>
+        </v-col>
+      </v-row>
+    </v-img>
+
     <v-list dense>
       <v-list-item
         v-for="(link, key) in links"

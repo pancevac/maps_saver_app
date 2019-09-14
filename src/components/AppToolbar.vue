@@ -19,16 +19,22 @@
     </v-btn>
 
     <v-btn
+        v-if="!isAuth"
         text
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        @click="$router.replace({name: 'login'})"
         target="_blank"
     >
       <span class="mr-2">Sing In</span>
+    </v-btn>
+    <v-btn v-if="isAuth">
+      <span @click="singOut" class="mr-2">Logout</span>
     </v-btn>
   </v-app-bar>
 </template>
 
 <script>
+  import firebase from "firebase"
+
   export default {
     name: "AppToolbar",
 
@@ -39,10 +45,22 @@
       }
     },
 
+    computed: {
+      isAuth() {
+        return !!firebase.auth().currentUser
+      }
+    },
+
     methods: {
       handleDrawerToggle() {
         this.$emit("toggle-drawer")
       },
+
+      singOut() {
+        firebase.auth().signOut().then(() => {
+          this.$router.replace({name: "login"})
+        })
+      }
     }
   }
 </script>

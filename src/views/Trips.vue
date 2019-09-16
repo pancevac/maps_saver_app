@@ -37,7 +37,14 @@
                     <div class="flex-grow-1"></div>
                     <v-dialog v-model="dialog" max-width="500px">
                       <template v-slot:activator="{ on }">
-                        <v-btn color="primary" dark class="mb-2" v-on="on">New Trip</v-btn>
+                        <v-btn
+                            :loading="gpxImporting"
+                            color="primary"
+                            dark
+                            class="mb-2"
+                            v-on="on"
+                        >New Trip
+                        </v-btn>
                       </template>
                       <v-card>
                         <v-card-title>
@@ -89,6 +96,24 @@
               </v-data-table>
             </v-card-text>
           </v-card>
+
+          <v-snackbar
+              v-model="notification.active"
+              bottom
+              :color="notification.type"
+              right
+              :timeout="6000"
+          >
+            {{ notification.message }}
+            <v-btn
+                dark
+                text
+                @click="notification = false"
+            >
+              Close
+            </v-btn>
+          </v-snackbar>
+
         </v-flex>
       </v-layout>
     </v-container>
@@ -100,10 +125,17 @@
 
   export default {
     data: () => ({
+      gpx: {},
+      notification: {
+        type: "",
+        active: false,
+        message: "",
+      },
       firestore: {},
       search: "",
       dialog: false,
       loading: false,
+      gpxImporting: false,
       headers: [
         {
           text: 'name',
@@ -150,8 +182,16 @@
 
     methods: {
 
-      setFile(event) {
-        console.log(event.name.lastIndexOf('.'))
+      setFile(file) {
+        if (file) {
+          this.gpx = {
+            name: file.name,
+            ext: file.name.slice(file.name.lastIndexOf('.')),
+            file: file
+          }
+        } else {
+          this.gpx = {}
+        }
       },
 
       /**
@@ -194,6 +234,9 @@
       save () {
         if (this.editedIndex > -1) {
           // Updating
+          // Validate input
+          if (!this.validateName()) return
+
           this.firestore.collection('trips')
               .where('id', '==', this.editedItem.id)
               .get()
@@ -201,20 +244,62 @@
                 const record = result.docs[0]
                 record.ref.update({name: this.editedItem.name})
                 this.initializeTrips()
+                this.showNotification('Trip name successfully updated!')
               })
-          //Object.assign(this.trips[this.editedIndex], this.editedItem)
+
         } else {
+
           // Creating
-          // TODO implement uploading file with form submission
+          if (!this.validateName() || !this.validateFile()) return
+
+          this.gpxImporting = true
           const maxId = Math.max(...this.trips.map(trip => trip.id), 0)
 
           this.firestore.collection('trips').add({
             id: maxId + 1,
             name: this.editedItem.name
-          }).then(() => this.initializeTrips())
+          }).then(() => {
+            this.initializeTrips()
+            this.showNotification('Trip is importing', 'info')
+
+            const ref = firebase.storage().ref()
+            const task = ref.child(this.gpx.name).put(this.gpx.file, {
+              contentType: 'gpx'
+            });
+
+            task.then(() => {
+              this.gpxImporting = false
+              this.showNotification('Trip is successfully imported!')
+            })
+
+          })
         }
         this.close()
       },
+
+      validateName() {
+        if (this.editedItem.name) {
+          return true
+        } else {
+          this.showNotification('You must fill a name field', 'error')
+          return false
+        }
+      },
+
+      validateFile() {
+        if (Object.getOwnPropertyNames(this.gpx).length >= 1 && this.gpx.ext === '.gpx') {
+          return true
+        } else {
+          this.showNotification('You must fill all fields', 'error')
+          return false
+        }
+      },
+
+      showNotification(message, type = 'success') {
+        this.notification.type = type
+        this.notification.message = message
+        this.notification.active = true
+      }
     },
   }
 </script>

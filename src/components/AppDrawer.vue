@@ -8,8 +8,8 @@
     <v-img :aspect-ratio="16/9" src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg">
       <v-row align="end" class="lightbox white--text pa-2 fill-height">
         <v-col>
-          <div class="subheading">Jonathan Lee</div>
-          <div class="body-1">heyfromjonathan@gmail.com</div>
+          <div class="subheading">{{ user.name }}</div>
+          <div class="body-1">{{ user.email }}</div>
         </v-col>
       </v-row>
     </v-img>
@@ -43,7 +43,13 @@
       links: [
         {icon: "mdi-home", text: "Trips", route: "trips"},
       ]
-    })
+    }),
+
+    computed: {
+      user() {
+        return this.$store.getters['auth/getUser']
+      }
+    }
 
   }
 </script>

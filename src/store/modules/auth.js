@@ -9,8 +9,8 @@ const auth = {
 
   state: {
     user: null,
-    access_token: Vue.auth.getToken(),
-    is_auth: Vue.auth.isAuth(),
+    access_token: null,
+    is_auth: false,
   },
 
   getters: {
@@ -43,6 +43,7 @@ const auth = {
      */
     setUser: (state, user) => {
       state.user = user
+      state.is_auth = true
     },
 
     /**
@@ -50,7 +51,6 @@ const auth = {
      */
     setAccessToken: (state, payload) => {
       state.access_token = payload.token // Set state
-      state.is_auth = true               // Set auth
       Vue.auth.setToken(                 // Set localstorage
           payload.token,
           payload.expires_in + Date.now()
@@ -80,6 +80,10 @@ const auth = {
     },
 
     destroyAccessToken: context => {
+      context.commit('destroyAccessToken')
+    },
+
+    singOut: context => {
       context.commit('destroyAccessToken')
     }
   }

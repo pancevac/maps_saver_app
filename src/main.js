@@ -29,7 +29,17 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-firebase.auth().onAuthStateChanged(() => {
+firebase.auth().onAuthStateChanged(user => {
+
+  if (user) {
+    store.commit('auth/setUser', { email: user.email, name: user.displayName });
+    user.getIdToken().then(token => {
+      store.commit('auth/setAccessToken', { token: token })
+    })
+  } else {
+    store.dispatch('auth/singOut')
+  }
+
   if (!app) {
     app = new Vue({
       router,

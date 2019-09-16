@@ -31,8 +31,13 @@
                   </v-flex>
                 </v-layout>
                 <v-layout row>
-                  <v-flex xs12>
+                  <v-flex xs12 class="d-flex justify-space-between">
                     <v-btn type="submit">Sign in</v-btn>
+                    <v-btn
+                        type="button"
+                        class="primary"
+                        @click="$router.replace({name: 'register'})"
+                    >Sign Up</v-btn>
                   </v-flex>
                 </v-layout>
               </form>

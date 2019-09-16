@@ -60,7 +60,14 @@
                             </v-row>
                             <v-row v-if="!editing">
                               <v-col>
-                                <v-file-input @change="setFile" show-size label="File input"></v-file-input>
+                                <v-file-input
+                                    :rules="[
+                                      value => !value || value.type < '.gpx' || 'FIle must have gpx extension',
+                                    ]"
+                                    accept=".gpx"
+                                    @change="setFile"
+                                    show-size label="File input"
+                                ></v-file-input>
                               </v-col>
                             </v-row>
                           </v-container>
@@ -160,7 +167,7 @@
     }),
 
     computed: {
-      formTitle () {
+      formTitle() {
         return this.editedIndex === -1 ? 'New Trip' : 'Edit Trip'
       },
 
@@ -170,12 +177,12 @@
     },
 
     watch: {
-      dialog (val) {
+      dialog(val) {
         val || this.close()
       },
     },
 
-    created () {
+    created() {
       this.firestore = firebase.firestore()
       this.initializeTrips()
     },
@@ -206,13 +213,13 @@
         })
       },
 
-      editItem (item) {
+      editItem(item) {
         this.editedIndex = this.trips.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
-      deleteItem (item) {
+      deleteItem(item) {
         this.firestore.collection('trips').where('id', '==', item.id).get()
             .then(results => {
               const record = results.docs[0]
@@ -223,7 +230,7 @@
             })
       },
 
-      close () {
+      close() {
         this.dialog = false
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -231,7 +238,7 @@
         }, 300)
       },
 
-      save () {
+      save() {
         if (this.editedIndex > -1) {
           // Updating
           // Validate input

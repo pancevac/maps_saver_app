@@ -20,8 +20,9 @@
             <v-card-text class="pa-0">
               <v-data-table
                   :headers="headers"
-                  :items="desserts"
+                  :items="trips"
                   :search="search"
+                  :loading="loading"
                   sort-by="name"
                   class="elevation-1"
               >
@@ -50,9 +51,9 @@
                                 <v-text-field v-model="editedItem.name" label="Trip name"></v-text-field>
                               </v-col>
                             </v-row>
-                            <v-row>
+                            <v-row v-if="!editing">
                               <v-col>
-                                <v-file-input show-size label="File input"></v-file-input>
+                                <v-file-input @change="setFile" show-size label="File input"></v-file-input>
                               </v-col>
                             </v-row>
                           </v-container>
@@ -95,10 +96,14 @@
 </template>
 
 <script>
+  import firebase from "firebase"
+
   export default {
     data: () => ({
+      firestore: {},
       search: "",
       dialog: false,
+      loading: false,
       headers: [
         {
           text: 'name',
@@ -112,7 +117,7 @@
           sortable: false
         },
       ],
-      desserts: [],
+      trips: [],
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -126,6 +131,10 @@
       formTitle () {
         return this.editedIndex === -1 ? 'New Trip' : 'Edit Trip'
       },
+
+      editing() {
+        return this.editedIndex !== -1
+      },
     },
 
     watch: {
@@ -135,34 +144,43 @@
     },
 
     created () {
-      this.initialize()
+      this.firestore = firebase.firestore()
+      this.initializeTrips()
     },
 
     methods: {
-      initialize () {
-        this.desserts = [
-          {name: 'Frozen Yogurt'},
-          {name: 'Ice cream sandwich'},
-          {name: 'Eclair'},
-          {name: 'Cupcake'},
-          {name: 'Gingerbread'},
-          {name: 'Jelly bean'},
-          {name: 'Lollipop'},
-          {name: 'Honeycomb'},
-          {name: 'Donut'},
-          {name: 'KitKat'},
-        ]
+
+      setFile(event) {
+        console.log(event.name.lastIndexOf('.'))
+      },
+
+      /**
+       * Retrieve user's trips.
+       */
+      initializeTrips() {
+        // TODO need different implementation for your custom backend
+        this.loading = true
+        this.firestore.collection('trips').get().then(results => {
+          this.trips = results.docs.map(record => record.data())
+          this.loading = false
+        })
       },
 
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
+        this.editedIndex = this.trips.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
       deleteItem (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+        this.firestore.collection('trips').where('id', '==', item.id).get()
+            .then(results => {
+              const record = results.docs[0]
+              if (confirm('Are you sure you want to delete this item?')) {
+                record.ref.delete()
+                this.initializeTrips()
+              }
+            })
       },
 
       close () {
@@ -175,9 +193,25 @@
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+          // Updating
+          this.firestore.collection('trips')
+              .where('id', '==', this.editedItem.id)
+              .get()
+              .then(result => {
+                const record = result.docs[0]
+                record.ref.update({name: this.editedItem.name})
+                this.initializeTrips()
+              })
+          //Object.assign(this.trips[this.editedIndex], this.editedItem)
         } else {
-          this.desserts.push(this.editedItem)
+          // Creating
+          // TODO implement uploading file with form submission
+          const maxId = Math.max(...this.trips.map(trip => trip.id), 0)
+
+          this.firestore.collection('trips').add({
+            id: maxId + 1,
+            name: this.editedItem.name
+          }).then(() => this.initializeTrips())
         }
         this.close()
       },

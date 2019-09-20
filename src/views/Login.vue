@@ -37,7 +37,8 @@
                         type="button"
                         class="primary"
                         @click="$router.replace({name: 'register'})"
-                    >Sign Up</v-btn>
+                    >Sign Up
+                    </v-btn>
                   </v-flex>
                 </v-layout>
               </form>
@@ -50,8 +51,6 @@
 </template>
 
 <script>
-  import firebase from "firebase"
-
   export default {
     name: "Login",
 
@@ -68,12 +67,13 @@
 
     methods: {
       onSingin() {
-        firebase.auth().signInWithEmailAndPassword(this.form.email, this.form.password)
+
+        this.$store.dispatch('auth/authRequest', {username: this.form.email, password: this.form.password})
             .then(() => {
               this.$router.replace({name: "trips"})
             })
             .catch(err => {
-              alert(`Oops. ${err.message}`)
+              alert(`Oops. ${err.response.data}`)
             })
       }
     },

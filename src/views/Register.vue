@@ -9,11 +9,21 @@
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field
+                        name="name"
+                        label="Username"
+                        id="name"
+                        v-model="form.name"
+                        type="text"
+                        :error-messages="errors ? errors.name : null"
+                        required>
+                    </v-text-field>
+                    <v-text-field
                         name="email"
                         label="Email"
                         id="email"
                         v-model="form.email"
                         type="email"
+                        :error-messages="errors ? errors.email : null"
                         required>
                     </v-text-field>
                   </v-flex>
@@ -26,6 +36,7 @@
                         id="password"
                         v-model="form.password"
                         type="password"
+                        :error-messages="errors ? errors.password : null"
                         required>
                     </v-text-field>
                   </v-flex>
@@ -57,7 +68,6 @@
 </template>
 
 <script>
-  import firebase from "firebase"
 
   export default {
     name: "Register",
@@ -65,9 +75,10 @@
     data: () => ({
       loading: false,
       errors: {
-        message: null
+        email: null,
       },
       form: {
+        name: "",
         email: "",
         password: "",
         confirmPassword: ""
@@ -81,14 +92,19 @@
     },
 
     methods: {
+
+      /**
+       * Handle sing up action.
+       */
       onSignup () {
-        firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password)
-            .then(() => {
-              this.$router.replace({name: "trips"})
-            })
-            .catch(err => {
-              alert(`Oops. ${err.message}`)
-            })
+
+        const { name, email, password } = this.form
+
+        axios.post('/api/register', { name, email, password }).then(() => {
+          this.$router.replace({name: "trips"})
+        }).catch(err => {
+          this.errors = err.response.data
+        })
       }
     },
   }

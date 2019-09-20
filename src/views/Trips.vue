@@ -55,7 +55,11 @@
                           <v-container>
                             <v-row>
                               <v-col>
-                                <v-text-field v-model="editedItem.name" label="Trip name"></v-text-field>
+                                <v-text-field
+                                    v-model="editedItem.name"
+                                    label="Trip name"
+                                    :error-messages="errors ? errors.name : null"
+                                ></v-text-field>
                               </v-col>
                             </v-row>
                             <v-row v-if="!editing">
@@ -98,7 +102,7 @@
                   </v-icon>
                 </template>
                 <template v-slot:no-data>
-                  <v-btn color="primary" @click="initialize">Reset</v-btn>
+                  <v-btn color="primary" @click="initializeTrips()">Reset</v-btn>
                 </template>
               </v-data-table>
             </v-card-text>
@@ -128,10 +132,9 @@
 </template>
 
 <script>
-  import firebase from "firebase"
-
   export default {
     data: () => ({
+      errors: null,
       gpx: {},
       notification: {
         type: "",
@@ -183,7 +186,7 @@
     },
 
     created() {
-      this.firestore = firebase.firestore()
+
       this.initializeTrips()
     },
 
@@ -205,10 +208,11 @@
        * Retrieve user's trips.
        */
       initializeTrips() {
-        // TODO need different implementation for your custom backend
         this.loading = true
-        this.firestore.collection('trips').get().then(results => {
-          this.trips = results.docs.map(record => record.data())
+        axios.get('/api/trips').then(response => {
+          this.trips = response.data.data
+          this.loading = false
+        }).catch(() => {
           this.loading = false
         })
       },
@@ -220,14 +224,11 @@
       },
 
       deleteItem(item) {
-        this.firestore.collection('trips').where('id', '==', item.id).get()
-            .then(results => {
-              const record = results.docs[0]
-              if (confirm('Are you sure you want to delete this item?')) {
-                record.ref.delete()
-                this.initializeTrips()
-              }
-            })
+        if (confirm('Are you sure you want to delete this item?')) {
+          axios.delete(`/api/trips/${item.id}`).then(() => {
+            this.initializeTrips()
+          })
+        }
       },
 
       close() {
@@ -235,6 +236,7 @@
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
+          this.errors = null
         }, 300)
       },
 
@@ -244,14 +246,14 @@
           // Validate input
           if (!this.validateName()) return
 
-          this.firestore.collection('trips')
-              .where('id', '==', this.editedItem.id)
-              .get()
-              .then(result => {
-                const record = result.docs[0]
-                record.ref.update({name: this.editedItem.name})
+          axios.put(`/api/trips/${this.editedItem.id}`, {name: this.editedItem.name})
+              .then(response => {
                 this.initializeTrips()
-                this.showNotification('Trip name successfully updated!')
+                this.showNotification(response.data.success)
+                this.close()
+              })
+              .catch(err => {
+                this.errors = err.response.data
               })
 
         } else {
@@ -259,29 +261,25 @@
           // Creating
           if (!this.validateName() || !this.validateFile()) return
 
+          let formData = new FormData()
+          formData.append('trip', this.gpx.file)
+          formData.append('name', this.editedItem.name)
+
           this.gpxImporting = true
-          const maxId = Math.max(...this.trips.map(trip => trip.id), 0)
+          this.showNotification('Trip is importing', 'info')
 
-          this.firestore.collection('trips').add({
-            id: maxId + 1,
-            name: this.editedItem.name
-          }).then(() => {
-            this.initializeTrips()
-            this.showNotification('Trip is importing', 'info')
-
-            const ref = firebase.storage().ref()
-            const task = ref.child(this.gpx.name).put(this.gpx.file, {
-              contentType: 'gpx'
-            });
-
-            task.then(() => {
-              this.gpxImporting = false
-              this.showNotification('Trip is successfully imported!')
-            })
-
-          })
+          axios.post('/api/trips', formData)
+              .then(response => {
+                this.gpxImporting = false
+                this.initializeTrips()
+                this.showNotification(response.data.success, 'success')
+                this.close()
+              })
+              .catch(err => {
+                this.errors = err.response.data
+                this.showNotification(err.response.data.message, 'error')
+              })
         }
-        this.close()
       },
 
       validateName() {

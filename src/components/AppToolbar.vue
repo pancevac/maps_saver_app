@@ -33,8 +33,6 @@
 </template>
 
 <script>
-  import firebase from "firebase"
-
   export default {
     name: "AppToolbar",
 
@@ -47,7 +45,7 @@
 
     computed: {
       isAuth() {
-        return !!firebase.auth().currentUser
+        return this.$store.getters['auth/isAuth']
       }
     },
 
@@ -57,8 +55,8 @@
       },
 
       singOut() {
-        firebase.auth().signOut().then(() => {
-          this.$router.replace({name: "login"})
+        this.$store.dispatch('auth/authLogout').then(() => {
+          this.$router.replace({name: "home"})
         })
       }
     }

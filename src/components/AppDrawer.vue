@@ -47,7 +47,7 @@
 
     computed: {
       user() {
-        return this.$store.getters['auth/getUser']
+        return this.$store.getters['auth/authUser']
       }
     }
 

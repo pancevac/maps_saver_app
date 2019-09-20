@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import store from './store'
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
@@ -52,7 +52,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  const currentUser = firebase.auth().currentUser
+  const currentUser = store.getters['auth/authUser']
   const requiredAuth = to.matched.some(record => record.meta.requiresAuth)
   const requiredGuest = to.matched.some(record => record.meta.requiredGuest)
 

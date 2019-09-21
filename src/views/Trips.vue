@@ -90,6 +90,13 @@
                   <v-icon
                       small
                       class="mr-2"
+                      @click="previewItem(item)"
+                  >
+                    search
+                  </v-icon>
+                  <v-icon
+                      small
+                      class="mr-2"
                       @click="editItem(item)"
                   >
                     edit
@@ -231,6 +238,10 @@
         }
       },
 
+      previewItem(item) {
+        this.$router.push({name: "show_trip", params: {id: item.id}})
+      },
+
       close() {
         this.dialog = false
         setTimeout(() => {
@@ -254,6 +265,7 @@
               })
               .catch(err => {
                 this.errors = err.response.data
+                this.showNotification(err.response.data.message, 'error')
               })
 
         } else {
@@ -278,6 +290,7 @@
               .catch(err => {
                 this.errors = err.response.data
                 this.showNotification(err.response.data.message, 'error')
+                this.gpxImporting = false
               })
         }
       },

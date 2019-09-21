@@ -5,6 +5,7 @@ import Home from './views/Home.vue'
 import Trips from "./views/Trips";
 import Login from "./views/Login";
 import Register from "./views/Register";
+import ShowTrip from "./views/ShowTrip";
 
 Vue.use(Router)
 
@@ -47,6 +48,12 @@ const router = new Router({
       name: "trips",
       component: Trips,
       meta: { requiresAuth: true }
+    },
+    {
+      path: "/show-trip/:id",
+      name: "show_trip",
+      component: ShowTrip,
+      meta: { requiresAuth: true, layout: 'Map' }
     }
   ]
 })

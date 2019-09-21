@@ -1,5 +1,5 @@
 const config = {
-  baseUrl: "http://localhost:80",
+  baseUrl: process.env.VUE_APP_API_URL,
   cookiePrefix: "maps_saver"
 }
 

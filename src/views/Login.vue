@@ -2,7 +2,7 @@
   <v-container
       class="fill-height"
       fluid
-      style="background-image: url('https://www.pixelstalk.net/wp-content/uploads/2016/07/1080p-Full-HD-Images.jpg')"
+      :style="{ backgroundImage: 'url(' + activeImg + ')' }"
   >
     <v-row
         align="center"
@@ -22,8 +22,8 @@
             <v-toolbar-title>Sign In</v-toolbar-title>
             <div class="flex-grow-1"></div>
           </v-toolbar>
-          <v-card-text>
-            <v-form @submit.prevent="onSingin">
+          <v-form @submit.prevent="onSingin">
+            <v-card-text>
               <v-text-field
                   name="email"
                   label="Email"
@@ -41,13 +41,14 @@
                   type="password"
                   required>
               </v-text-field>
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <div class="flex-grow-1"></div>
-            <v-btn color="danger" type="submit">Sign In</v-btn>
-            <v-btn color="primary" type="button" @click="$router.replace({name: 'register'})">Register</v-btn>
-          </v-card-actions>
+
+            </v-card-text>
+            <v-card-actions>
+              <div class="flex-grow-1"></div>
+              <v-btn color="danger" type="submit" :loading="loading">Sign In</v-btn>
+              <v-btn color="primary" type="button" @click="$router.replace({name: 'register'})">Register</v-btn>
+            </v-card-actions>
+          </v-form>
         </v-card>
       </v-col>
     </v-row>
@@ -55,8 +56,12 @@
 </template>
 
 <script>
+  import backgroundSwitcher from "../mixins/backgroundSwitcher";
+
   export default {
     name: "Login",
+
+    mixins: [backgroundSwitcher],
 
     data: () => ({
       loading: false,
@@ -72,11 +77,13 @@
     methods: {
       onSingin() {
 
+        this.loading = true
         this.$store.dispatch('auth/authRequest', {username: this.form.email, password: this.form.password})
             .then(() => {
               this.$router.replace({name: "trips"})
             })
             .catch(err => {
+              this.loading = false
               alert(`Oops. ${err.response.data}`)
             })
       }

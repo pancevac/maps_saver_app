@@ -3,7 +3,7 @@
   <v-container
       class="fill-height"
       fluid
-      style="background-image: url('https://www.pixelstalk.net/wp-content/uploads/2016/07/1080p-Full-HD-Images.jpg')"
+      :style="{ backgroundImage: 'url(' + activeImg + ')' }"
   >
     <v-row
         align="center"
@@ -23,8 +23,9 @@
             <v-toolbar-title>Sign Up</v-toolbar-title>
             <div class="flex-grow-1"></div>
           </v-toolbar>
-          <v-card-text>
-            <v-form @submit.prevent="onSignup">
+          <v-form @submit.prevent="onSignup">
+            <v-card-text>
+
               <v-text-field
                   name="name"
                   label="Username"
@@ -64,13 +65,14 @@
                   :rules="[comparePasswords]">
               </v-text-field>
 
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <div class="flex-grow-1"></div>
-            <v-btn color="danger" type="submit">Sing Up</v-btn>
-            <v-btn color="primary" type="button" @click="$router.replace({name: 'login'})">Sign In</v-btn>
-          </v-card-actions>
+
+            </v-card-text>
+            <v-card-actions>
+              <div class="flex-grow-1"></div>
+              <v-btn color="danger" type="submit" :loading="loading">Sing Up</v-btn>
+              <v-btn color="primary" type="button" @click="$router.replace({name: 'login'})">Sign In</v-btn>
+            </v-card-actions>
+          </v-form>
         </v-card>
       </v-col>
     </v-row>
@@ -79,9 +81,12 @@
 </template>
 
 <script>
+  import backgroundSwitcher from "../mixins/backgroundSwitcher";
 
   export default {
     name: "Register",
+
+    mixins: [backgroundSwitcher],
 
     data: () => ({
       loading: false,
@@ -97,7 +102,7 @@
     }),
 
     computed: {
-      comparePasswords () {
+      comparePasswords() {
         return this.form.password !== this.form.confirmPassword ? 'Passwords do not match' : ''
       },
     },
@@ -107,13 +112,14 @@
       /**
        * Handle sing up action.
        */
-      onSignup () {
+      onSignup() {
+        this.loading = true
+        const {name, email, password} = this.form
 
-        const { name, email, password } = this.form
-
-        axios.post('/api/register', { name, email, password }).then(() => {
+        axios.post('/api/register', {name, email, password}).then(() => {
           this.$router.replace({name: "trips"})
         }).catch(err => {
+          this.loading = false
           this.errors = err.response.data
         })
       }

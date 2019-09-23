@@ -35,22 +35,20 @@
                 class="title font-weight-light"
                 style="line-height: 1.7 !important;"
             >
-              Lorem ipsum dolor sit amet, consectetur ad
-              ipiscin elit. Etiam vulputate augue vel felis gra
-              vida porta. Lorem ipsum dolor sit amet, cons
-              ectetur adipiscing elit.<br>
-              Lorem ipsum dolor sit amet, consectetur ad
-              ipiscin elit. Etiam vulputate augue vel felis gra
-              vida porta. Lorem ipsum dolor sit amet, cons
-              ectetur adipiscing elit.
+              Maps Saver is simple SPA Web App for saving maps coordinates by using GPX format.
+              It can manage any maps type that support GPX.
+              <br><br>Application is build with VueJS framework and using Lumen as backend service.
+              <br><br>With sign in, you have ability to store, edit and preview your trips. No registration confirmation mail is needed,
+              just register or log in with public account.
             </p>
 
             <v-btn
                 class="mt-4"
                 color="secondary"
                 rounded
+                @click="$router.replace({name: 'trips'})"
             >
-              Learn More!
+              Check Your Trips
             </v-btn>
 
           </v-flex>
@@ -65,6 +63,6 @@
 <script>
 
 export default {
-  name: "Home"
+  //
 };
 </script>

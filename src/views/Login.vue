@@ -29,6 +29,7 @@
                   label="Email"
                   id="email"
                   v-model="form.email"
+                  :error="hasError"
                   type="email"
                   required>
               </v-text-field>
@@ -38,6 +39,7 @@
                   label="Password"
                   id="password"
                   v-model="form.password"
+                  :error="hasError"
                   type="password"
                   required>
               </v-text-field>
@@ -50,6 +52,24 @@
             </v-card-actions>
           </v-form>
         </v-card>
+
+        <v-snackbar
+            v-model="notification.active"
+            bottom
+            :color="notification.type"
+            right
+            :timeout="6000"
+        >
+          {{ notification.message }}
+          <v-btn
+              dark
+              text
+              @click="notification = false"
+          >
+            Close
+          </v-btn>
+        </v-snackbar>
+
       </v-col>
     </v-row>
   </v-container>
@@ -65,13 +85,17 @@
 
     data: () => ({
       loading: false,
-      errors: {
-        message: null
-      },
+      hasError: false,
       form: {
         email: "",
         password: ""
-      }
+      },
+
+      notification: {
+        type: "",
+        active: false,
+        message: "",
+      },
     }),
 
     methods: {
@@ -84,9 +108,17 @@
             })
             .catch(err => {
               this.loading = false
-              alert(`Oops. ${err.response.data}`)
+              this.hasError = true
+              this.showNotification(err.response.data.message, 'error')
             })
+      },
+
+      showNotification(message, type = 'success') {
+        this.notification.type = type
+        this.notification.message = message
+        this.notification.active = true
       }
+
     },
   }
 </script>

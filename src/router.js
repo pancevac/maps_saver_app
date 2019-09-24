@@ -1,11 +1,6 @@
 import store from './store'
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import Trips from "./views/Trips";
-import Login from "./views/Login";
-import Register from "./views/Register";
-import ShowTrip from "./views/ShowTrip";
 
 Vue.use(Router)
 
@@ -20,20 +15,20 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home,
-      meta: { layout: 'Home' }
+      meta: { layout: 'Home' },
+      component: () => import('./views/Home.vue')
     },
     {
       path: "/login",
       name: "login",
       meta: { layout: 'Home', requiredGuest: true },
-      component: Login
+      component: () => import('./views/Login.vue')
     },
     {
       path: "/register",
       name: "register",
       meta: { layout: 'Home', requiredGuest: true },
-      component: Register
+      component: () => import('./views/Register.vue')
     },
     {
       path: '/about',
@@ -46,14 +41,14 @@ const router = new Router({
     {
       path: "/trips",
       name: "trips",
-      component: Trips,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      component: () => import('./views/Trips.vue')
     },
     {
       path: "/show-trip/:id",
       name: "show_trip",
-      component: ShowTrip,
-      meta: { requiresAuth: true, layout: 'Map' }
+      meta: { requiresAuth: true, layout: 'Map' },
+      component: () => import('./views/ShowTrip.vue')
     }
   ]
 })

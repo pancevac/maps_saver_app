@@ -39,7 +39,11 @@
               It can manage any maps type that support GPX.
               <br><br>Application is build with VueJS framework and using Lumen as backend service.
               <br><br>With sign in, you have ability to store, edit and preview your trips. No registration confirmation mail is needed,
-              just register or log in with public account.
+              just register or log in with public account.<br>
+
+              <br>Public account credentials:<br>
+              <b>email</b>: admin@mail.com<br>
+              <b>password</b>: password
             </p>
 
             <v-btn

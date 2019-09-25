@@ -43,6 +43,7 @@
       links: [
         {icon: "mdi-home", text: "Home", route: "home"},
         {icon: "mdi-road", text: "Trips", route: "trips"},
+        {icon: "mdi-alert-circle", text: "About", route: "about"},
       ]
     }),
 

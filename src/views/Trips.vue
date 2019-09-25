@@ -87,13 +87,18 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item.action="{ item }">
-                  <v-icon
-                      small
+                  <v-chip
                       class="mr-2"
                       @click="previewItem(item)"
                   >
-                    search
-                  </v-icon>
+                    <v-icon
+                        small
+                        class="mr-2"
+                    >
+                      search
+                    </v-icon>
+                    Preview
+                  </v-chip>
                   <v-icon
                       small
                       class="mr-2"

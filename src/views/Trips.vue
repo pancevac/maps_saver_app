@@ -237,7 +237,8 @@
 
       deleteItem(item) {
         if (confirm('Are you sure you want to delete this item?')) {
-          axios.delete(`/api/trips/${item.id}`).then(() => {
+          axios.delete(`/api/trips/${item.id}`).then((response) => {
+            this.showNotification(response.data.message)
             this.initializeTrips()
           })
         }
@@ -265,7 +266,7 @@
           axios.put(`/api/trips/${this.editedItem.id}`, {name: this.editedItem.name})
               .then(response => {
                 this.initializeTrips()
-                this.showNotification(response.data.success)
+                this.showNotification(response.data.message)
                 this.close()
               })
               .catch(err => {
@@ -289,7 +290,7 @@
               .then(response => {
                 this.gpxImporting = false
                 this.initializeTrips()
-                this.showNotification(response.data.success, 'success')
+                this.showNotification(response.data.message, 'success')
                 this.close()
               })
               .catch(err => {

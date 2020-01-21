@@ -77,7 +77,7 @@ const auth = {
         commit('authRequest')
         axios.post('/api/login', {username, password})
             .then(response => {
-              const token = response.data.access_token
+              const token = response.data.token
               axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
               commit('setToken', {token})
               commit('authSuccess', token)

@@ -24,6 +24,8 @@
           </v-toolbar>
           <v-form @submit.prevent="onSingin">
             <v-card-text>
+              <b>Default Email:</b> admin@mail.com<br>
+              <b>Default password:</b> password
               <v-text-field
                   name="email"
                   label="Email"

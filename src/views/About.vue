@@ -34,11 +34,15 @@
                 class="title font-weight-light"
                 style="line-height: 1.7 !important;"
             >
-              Developed with VueJS (Vuex, Vuetify) and Lumen as backend service.
+              Developed with VueJS (Vuex, Vuetify) and Symfony Framework as backend service.
               <br><br>App store GPX format which can be used to describe waypoints, tracks, and routes, with that,
               we can view tracks projected onto various map sources and annotating maps such is Google Maps.
               <br><br>App also support preview feature which project tracks and routes using Google Maps API for a given trip.
+              <br><br>
+              
+              <b>Symfony API Docs: </b><a href="https://ms-service.sinisab.tk/api/doc">Visit</a>
               <br><br><b>Repositories</b>
+
               <br>
               <a
                   style="text-decoration: none"

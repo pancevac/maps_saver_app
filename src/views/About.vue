@@ -34,11 +34,7 @@
                 class="title font-weight-light"
                 style="line-height: 1.7 !important;"
             >
-<<<<<<< HEAD
-              Developed with VueJS (Vuex, Vuetify) and Symfony as backend service.
-=======
               Developed with VueJS (Vuex, Vuetify) and Symfony Framework as backend service.
->>>>>>> dev
               <br><br>App store GPX format which can be used to describe waypoints, tracks, and routes, with that,
               we can view tracks projected onto various map sources and annotating maps such is Google Maps.
               <br><br>App also support preview feature which project tracks and routes using Google Maps API for a given trip.

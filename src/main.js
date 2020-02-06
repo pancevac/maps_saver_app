@@ -16,12 +16,7 @@ if (token) {
 }
 
 store.dispatch('auth/userRequest')
-    .then(() => {
-      initApp()
-    })
-    .catch(() => {
-      initApp()
-    })
+    .finally(() => initApp())
 
 /*store.watch(state => state.auth.user, user => {
   console.log(user)

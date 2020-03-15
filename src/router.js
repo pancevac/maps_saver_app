@@ -40,6 +40,12 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
+      path: '/email-confirmation',
+      name: 'email_confirmation',
+      meta: { layout: 'Home' },
+      component: () => import('./views/EmailConfirmation.vue')
+    },
+    {
       path: "/trips",
       name: "trips",
       meta: { requiresAuth: true },

@@ -70,7 +70,7 @@
             <v-card-actions>
               <div class="flex-grow-1"></div>
               <v-btn color="danger" type="submit" :loading="loading">Sing Up</v-btn>
-              <v-btn color="primary" type="button" @click="$router.replace({name: 'login'})">Sign In</v-btn>
+              <v-btn color="primary" type="button" @click="$router.replace({name: 'login'})">Log In</v-btn>
             </v-card-actions>
           </v-form>
         </v-card>
@@ -116,12 +116,13 @@
         this.loading = true
         const {name, email, password} = this.form
 
-        axios.post('/api/register', {name, email, password}).then(() => {
-          this.$router.replace({name: "trips"})
-        }).catch(err => {
-          this.loading = false
-          this.errors = err.response.data
-        })
+        axios.post('/api/register', {name, email, password})
+          .then(() => this.$store.dispatch('auth/setRegisteredEmail', email))
+          .then(() => this.$router.replace({ name: "email_confirmation" }))
+          .catch(err => {
+            this.loading = false
+            this.errors = err.response.data
+          })
       }
     },
   }

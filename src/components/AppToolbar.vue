@@ -31,7 +31,7 @@
         @click="$router.replace({name: 'login'})"
         target="_blank"
     >
-      <span class="mr-2">Sing In</span>
+      <span class="mr-2">Log In</span>
     </v-btn>
     <v-btn v-if="isAuth">
       <span @click="singOut" class="mr-2">Logout</span>

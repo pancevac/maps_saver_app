@@ -10,14 +10,16 @@ const auth = {
   state: {
     user: null,
     token: Vue.auth.getToken(),
-    status: ''
+    status: '',
+    registeredEmail: null
   },
 
   getters: {
     authUser: state => state.user,
     token: state => state.token,
     isAuth: state => !!state.user,
-    authStatus: state => state.status
+    authStatus: state => state.status,
+    registeredEmail: state => state.registeredEmail
   },
 
   mutations: {
@@ -38,6 +40,10 @@ const auth = {
     authLogout: state => {
       state.user = null
       state.token = null
+    },
+
+    setRegisterdEmail: (state, email) => {
+      state.registeredEmail = email
     },
 
     /**
@@ -101,6 +107,13 @@ const auth = {
         Vue.auth.destroyToken()
         // remove the axios default header
         delete axios.defaults.headers.common['Authorization']
+        resolve()
+      })
+    },
+
+    setRegisteredEmail: ({ commit }, email) => {
+      return new Promise((resolve) => {
+        commit('setRegisterdEmail', email)
         resolve()
       })
     }

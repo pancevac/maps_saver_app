@@ -53,7 +53,7 @@
             </v-card-text>
             <v-card-actions>
               <div class="flex-grow-1">
-                <a style="margin-left: 7px" href="#">Forgot Password?</a>
+                <a style="margin-left: 7px" href="#" @click="$router.push({name: 'reset_password'})">Forgot Password?</a>
               </div>
               <v-btn color="danger" type="submit" :loading="loading">Log In</v-btn>
               <v-btn

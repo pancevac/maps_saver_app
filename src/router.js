@@ -46,6 +46,18 @@ const router = new Router({
       component: () => import('./views/EmailConfirmation.vue')
     },
     {
+      path: '/reset-password',
+      name: 'reset_password',
+      meta: { layout: 'Home', requiredGuest: true },
+      component: () => import('./views/ResetPassword.vue')
+    },
+    {
+      path: '/new-password/:token',
+      name: 'new_password',
+      meta: { layout: 'Home', requiredGuest: true },
+      component: () => import('./views/NewPassword.vue')
+    },
+    {
       path: "/trips",
       name: "trips",
       meta: { requiresAuth: true },
